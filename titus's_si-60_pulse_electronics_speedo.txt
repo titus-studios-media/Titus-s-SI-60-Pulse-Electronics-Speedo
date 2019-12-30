@@ -1,0 +1,44 @@
+@name Titus's SI-60 Pulse Electronics Speedo
+@inputs MPH GaugeLight
+@outputs EmergencyOST
+@persist Ang OverSpeedTrip OverSpeedTripLimit
+@trigger 
+@model models/anytrains/props/detail/pulse_speedo.mdl
+
+E = entity()
+
+if(dupefinished() | duped()){ reset() }
+if(first()){ 
+    
+    OverSpeedTrip = 1 #0, Off. 1, On.
+    OverSpeedTripLimit = 55 #Speed at which, if exceeded, the Emergency output will be activated.
+
+    A = 1
+    holoCreate(A)
+    holoParent(A,E)
+    holoModel(A, "plane")
+    holoColor(A,vec(255))
+    holoScale(A,vec(0.44))
+    holoPos(A,E:toWorld(vec(0,3.5,0)))
+    holoAng(A,E:toWorld(ang(86,0,-90)))
+    holoMaterial(A,"models/gsgtrainprops/cab/needle_air_black")
+    
+}
+
+interval(150)
+
+Ang = Ang + ( MPH - Ang ) /  max( 1.5, 0 )   
+holoAng(1,E:toWorld(ang(86-(Ang*3.02),0,-90)))
+
+if(OverSpeedTrip){
+if(MPH>OverSpeedTripLimit){ EmergencyOST = 1 }
+if(EmergencyOST==1&MPH<1){ EmergencyOST = 0 }
+}
+
+if(GaugeLight){
+lightCreate(1,E:toWorld(vec(0,4.5,0)),vec(250,190,100),25,3)
+lightParent(1,E)
+}
+else{
+lightRemoveAll()
+}
