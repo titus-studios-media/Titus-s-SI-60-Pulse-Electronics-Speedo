@@ -6,6 +6,7 @@
 @model models/anytrains/props/detail/pulse_speedo.mdl
 
 E = entity()
+E:setAlpha(0)
 
 if(dupefinished() | duped()){ reset() }
 if(first()){ 
@@ -14,6 +15,15 @@ if(first()){
     OverSpeedTripLimit = 55 #Speed at which, if exceeded, the Emergency output will be activated.
     
     MainScale = vec(1)
+    
+    A = 0
+    holoCreate(A)
+    holoParent(A,E)
+    holoModel(A, "models/anytrains/props/detail/pulse_speedo.mdl")
+    holoColor(A,vec(255))
+    holoScale(A,vec(1)*MainScale)
+    holoPos(A,E:toWorld(vec(0,0,0)))
+    holoAng(A,E:toWorld(ang(0,0,0)))
 
     A = 1
     holoCreate(A)
